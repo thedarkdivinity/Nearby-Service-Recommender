@@ -29,7 +29,17 @@ app.post('/acquire',async(req,res)=>{
     }
 });
 
+app.post('/rate',async (req,res)=>{
 
+    try {
+        //await
+        const {rating,email,pname,uname}=req.body;
+        const newRating= await pool.query("INSERT INTO rating(rating,email,pname,uname) VALUES($1,$2,$3,$4) RETURNING *",[rating,email,pname,uname])
+        console.log(req.body);
+    } catch (error) {
+        console.error(error.message);
+    }
+})
 
 app.listen(5000,()=>{
     console.log('Server started on 5000');

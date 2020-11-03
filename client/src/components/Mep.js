@@ -5,7 +5,8 @@ import ReactMapGL, { MapState, Marker ,Popup} from "react-map-gl";
 import { MapContext } from "react-mapbox-gl";
 import Mar from "../../src/marker.jpg"
 import {useAuth0} from '@auth0/auth0-react';
-import Axios from "axios";
+import axios from "axios";
+import { Button, TextField } from "@material-ui/core";
 const Mep=()=> {
   const [viewport, setViewport] = useState({
     latitude: 19.0903,
@@ -14,13 +15,15 @@ const Mep=()=> {
     width: "100vw",
     height: "100vh",
   });
-  const { isAuthenticated} = useAuth0();
+  const { isAuthenticated ,user } = useAuth0();
+  const [rating,setRating]=useState(1);
   const [lati, setLati] = useState(19.021324);
   const [longi, setLongi] = useState(72.84241780000002);
   const [places,setPlaces]=useState([]);
   const [query,setQuery]=useState("");
   const [selectedPlace,setSelectedPlace]=useState(null);
-  const [parameterToSearch,setParameterToSearch]=useState("petrol stations")
+  const [parameterToSearch,setParameterToSearch]=useState("petrol stations");
+  const [alertShown,setAlertShown]=useState(true);
   const ApiKey =
     "pk.eyJ1Ijoid2ltc2dkIiwiYSI6ImNrZzg4bGtvYTBiNmUycWxzYmlmdW95ZDQifQ.RT-TaJBBkcFVrVqwuusKpQ";
   const HereKey = "SsQDGgfyRDH31cHPtVCPz2w9WimPDEbQjHyAR_Xb-NY";
@@ -37,12 +40,20 @@ const Mep=()=> {
       // console.log("Location data not available");
     }
   }
+  useEffect(()=>{
+    const listener = e=>{
+      if (e.key === "Escape"){
+        setSelectedPlace(null);
+      }
+    };
+    window.addEventListener("keydown",listener);
+  })
   const getLocs = async () => {
     
     // let resul= await Axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${longi},${lati}.json?types=poi&access_token=${ApiKey}`)
     // console.log(resul.data.features[0].text);
     try {
-      let nearbyPlaces = await Axios.get(`https://discover.search.hereapi.com/v1/discover?at=${lati},${longi}&q=${parameterToSearch}&lang=en-US&apiKey=SsQDGgfyRDH31cHPtVCPz2w9WimPDEbQjHyAR_Xb-NY`);
+      let nearbyPlaces = await axios.get(`https://discover.search.hereapi.com/v1/discover?at=${lati},${longi}&q=${parameterToSearch}&lang=en-US&apiKey=SsQDGgfyRDH31cHPtVCPz2w9WimPDEbQjHyAR_Xb-NY`);
     var resultsNear=nearbyPlaces.data.items;
     setPlaces(resultsNear);
     
@@ -65,6 +76,25 @@ const Mep=()=> {
 
     getLocs();
   };
+  const ratingHandler=(e)=>{
+    e.preventDefault();
+    alert("submitted")
+    const email=user.email;
+    const uname=user.name;
+    const pname=selectedPlace.title;
+    console.log(email);
+    const ratingObject={
+      rating,
+      email,
+      pname,
+      uname
+    };
+    axios.post("http://localhost:5000/rate",ratingObject);
+  }
+  if(!isAuthenticated && alertShown){
+    alert("You need to log in");
+    setAlertShown(false);
+  }
   return (
     <>
     {isAuthenticated && (
@@ -99,11 +129,48 @@ const Mep=()=> {
         )
        })}
        {selectedPlace ? (
+        
         <Popup latitude={selectedPlace.position.lat} longitude={selectedPlace.position.lng}
-        onClose={()=>setSelectedPlace(null)}
+        
+
+
+
         >
         <div>
         <h3>{selectedPlace.title}</h3>
+        <form onSubmit={ratingHandler}>
+        <TextField 
+        type="number" 
+        variant="standard" 
+        value={rating}
+        onChange={(e)=>{
+          setRating(e.target.value);
+
+        }}
+        color="primary" 
+        placeholder="rating" />
+        <div style={{marginTop:"20px"}}>
+        <Button
+        variant="contained"
+        type="submit"
+        onClick={()=>alert("clicked")}
+        color="primary" 
+        style={{
+          
+          marginRight:"auto"
+        }}
+        >Rate</Button>
+       
+        <Button
+        variant="contained"
+        color="primary" 
+        style={{
+          
+          marginLeft:"auto"
+        }}
+        >View Rating</Button>
+        </div>
+        </form>
         </div>
         </Popup>
        ): null}
