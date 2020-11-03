@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-import "./App.css";
+
 import ReactMapGL, { MapState, Marker ,Popup} from "react-map-gl";
 import { MapContext } from "react-mapbox-gl";
-import Mar from "../src/marker.jpg";
-
+import Mar from "../../src/marker.jpg"
+import {useAuth0} from '@auth0/auth0-react';
 import Axios from "axios";
 const Mep=()=> {
   const [viewport, setViewport] = useState({
@@ -14,6 +14,7 @@ const Mep=()=> {
     width: "100vw",
     height: "100vh",
   });
+  const { isAuthenticated} = useAuth0();
   const [lati, setLati] = useState(19.021324);
   const [longi, setLongi] = useState(72.84241780000002);
   const [places,setPlaces]=useState([]);
@@ -65,7 +66,9 @@ const Mep=()=> {
     getLocs();
   };
   return (
-    <div className="App">
+    <>
+    {isAuthenticated && (
+      <div className="App">
     <input type="text" value={query} onChange={(e)=>setQuery(e.target.value)} />
     <button 
     onClick={()=>setParameterToSearch(query)}
@@ -106,6 +109,10 @@ const Mep=()=> {
        ): null}
       </ReactMapGL>
     </div>
+
+    )}
+    
+    </>
   );
 }
 

@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import axios from 'axios';
 import Logoutbutton from './Logoutbutton';
-
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
     root: {
@@ -30,6 +30,7 @@ const useStyles = makeStyles({
 
 const Farm = () => {
     const classes = useStyles();
+    const history = useHistory();
     const [email,setEmail]=useState("");
     const [fname,setFname]=useState("");
     const [lname,setLname]=useState("");
@@ -55,6 +56,7 @@ const Farm = () => {
 
           }
           axios.post("http://localhost:5000/acquire",submission);
+          history.push('/map');
         }}>
         <CardContent>
           <Typography className={classes.title} color="textPrimary" variant="h2" gutterBottom>

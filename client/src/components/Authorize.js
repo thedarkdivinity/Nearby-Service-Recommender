@@ -7,11 +7,13 @@ import Profile from "./Profile";
 const Authorize = () => {
   return (
       <>
+      <main>
     <ButtonGroup>
       <Loginbutton />
       
     </ButtonGroup>
     <Profile/>
+    </main>
     </>
   );
 };
