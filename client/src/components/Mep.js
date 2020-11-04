@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import Modal from "react-modal";
 
 import ReactMapGL, { MapState, Marker ,Popup} from "react-map-gl";
 import { MapContext } from "react-mapbox-gl";
@@ -17,6 +17,7 @@ const Mep=()=> {
   });
   const { isAuthenticated ,user } = useAuth0();
   const [rating,setRating]=useState(1);
+  const [opened,setOpened]=useState(false);
   const [lati, setLati] = useState(19.021324);
   const [longi, setLongi] = useState(72.84241780000002);
   const [places,setPlaces]=useState([]);
@@ -24,6 +25,7 @@ const Mep=()=> {
   const [selectedPlace,setSelectedPlace]=useState(null);
   const [parameterToSearch,setParameterToSearch]=useState("petrol stations");
   const [alertShown,setAlertShown]=useState(true);
+  const [getRatings,setGetRatings]=useState([]);
   const ApiKey =
     "pk.eyJ1Ijoid2ltc2dkIiwiYSI6ImNrZzg4bGtvYTBiNmUycWxzYmlmdW95ZDQifQ.RT-TaJBBkcFVrVqwuusKpQ";
   const HereKey = "SsQDGgfyRDH31cHPtVCPz2w9WimPDEbQjHyAR_Xb-NY";
@@ -44,6 +46,7 @@ const Mep=()=> {
     const listener = e=>{
       if (e.key === "Escape"){
         setSelectedPlace(null);
+        setOpened(false);
       }
     };
     window.addEventListener("keydown",listener);
@@ -76,14 +79,20 @@ const Mep=()=> {
 
     getLocs();
   };
+
+
+
+  //HANDLE RATINGS FORM
   const ratingHandler=(e)=>{
     e.preventDefault();
     alert("submitted")
     const email=user.email;
     const uname=user.name;
     const pname=selectedPlace.title;
+    const pid=selectedPlace.position.lat * selectedPlace.position.lng;
     console.log(email);
     const ratingObject={
+      pid,
       rating,
       email,
       pname,
@@ -93,6 +102,7 @@ const Mep=()=> {
   }
   if(!isAuthenticated && alertShown){
     alert("You need to log in");
+
     setAlertShown(false);
   }
   return (
@@ -118,7 +128,7 @@ const Mep=()=> {
         
        
         return(
-          <Marker latitude={place.position.lat} key={place.position.lat*Math.random()*100000} longitude={place.position.lng}>
+          <Marker latitude={place.position.lat} key={place.position.lat*place.position.lng} longitude={place.position.lng}>
           <button className="MarkerBtn" onClick={(e)=>{
             e.preventDefault();
             setSelectedPlace(place);
@@ -153,7 +163,7 @@ const Mep=()=> {
         <Button
         variant="contained"
         type="submit"
-        onClick={()=>alert("clicked")}
+        
         color="primary" 
         style={{
           
@@ -164,11 +174,34 @@ const Mep=()=> {
         <Button
         variant="contained"
         color="primary" 
+        onClick={async()=>{
+          
+          setOpened(true);
+         try {
+           const viewRatings=await axios.get(`http://localhost:5000/rate/${selectedPlace.position.lat * selectedPlace.position.lng}`);
+           setGetRatings(viewRatings.data);
+         } catch (error) {
+           console.log(error.message);
+         }
+          
+        }}
         style={{
           
           marginLeft:"auto"
         }}
         >View Rating</Button>
+        <Modal isOpen={opened} >
+        <h2>View Ratings</h2>
+        <Button variant="contained" color="secondary" onClick={()=>setOpened(false)}>Close</Button>
+       <ul>
+       {getRatings.map((rati)=>{
+        return(
+          <li key={rati.pid}>{rati.email} {rati.pname} {rati.rating}</li>
+        );
+       })}
+       </ul>
+        
+        </Modal>
         </div>
         </form>
         </div>

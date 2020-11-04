@@ -14,6 +14,7 @@ CREATE TABLE acquire(
 CREATE TABLE rating(
 
     rating_id SERIAL PRIMARY KEY,
+    pid DECIMAL,
     rating INTEGER,
     email VARCHAR(255),
     pname VARCHAR(255),

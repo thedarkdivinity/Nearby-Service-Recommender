@@ -28,14 +28,25 @@ app.post('/acquire',async(req,res)=>{
         console.error(error.message);
     }
 });
-
+//ADD NEW RATINGS
 app.post('/rate',async (req,res)=>{
 
     try {
         //await
-        const {rating,email,pname,uname}=req.body;
-        const newRating= await pool.query("INSERT INTO rating(rating,email,pname,uname) VALUES($1,$2,$3,$4) RETURNING *",[rating,email,pname,uname])
+        const {pid,rating,email,pname,uname}=req.body;
+        const newRating= await pool.query("INSERT INTO rating(pid,rating,email,pname,uname) VALUES($1,$2,$3,$4,$5) RETURNING *",[pid,rating,email,pname,uname])
         console.log(req.body);
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+//GET ALL RATINGS OF SELECTED PLACE
+app.get('/rate/:pid',async(req,res)=>{
+  const {pid}=req.params;
+    try {
+        //Await
+        const allRatings=await pool.query("SELECT * FROM rating WHERE pid=$1",[pid]);
+        res.json(allRatings.rows);
     } catch (error) {
         console.error(error.message);
     }
