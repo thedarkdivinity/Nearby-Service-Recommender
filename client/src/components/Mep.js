@@ -1,13 +1,36 @@
 import React, { useState, useEffect } from "react";
-import Modal from "react-modal";
 
+
+import { makeStyles } from '@material-ui/core/styles';
 import ReactMapGL, { MapState, Marker ,Popup} from "react-map-gl";
 import { MapContext } from "react-mapbox-gl";
 import Mar from "../../src/marker.jpg"
 import {useAuth0} from '@auth0/auth0-react';
 import axios from "axios";
-import { Button, TextField } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+import Typography from '@material-ui/core/Typography';
+import { Button, TextField} from "@material-ui/core";
+import MyPlace from "./MyPlace";
+import SelectedButtons from "./SelectedButtons";
+import MapModal from "./MapModal";
+const useStyles = makeStyles({
+  root: {
+    minWidth: 275,
+  },
+  bullet: {
+    display: 'inline-block',
+    margin: '0 2px',
+    transform: 'scale(0.8)',
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  },
+});
 const Mep=()=> {
+  const history = useHistory();
   const [viewport, setViewport] = useState({
     latitude: 19.0903,
     longitude: 72.8714,
@@ -18,8 +41,8 @@ const Mep=()=> {
   const { isAuthenticated ,user } = useAuth0();
   const [rating,setRating]=useState(1);
   const [opened,setOpened]=useState(false);
-  const [lati, setLati] = useState(19.021324);
-  const [longi, setLongi] = useState(72.84241780000002);
+  const [lati, setLati] = useState(0);
+  const [longi, setLongi] = useState(0);
   const [places,setPlaces]=useState([]);
   const [query,setQuery]=useState("");
   const [selectedPlace,setSelectedPlace]=useState(null);
@@ -31,7 +54,7 @@ const Mep=()=> {
   const HereKey = "SsQDGgfyRDH31cHPtVCPz2w9WimPDEbQjHyAR_Xb-NY";
   useEffect(() => {
     getLocation();
-  }, [lati]);
+  }, [lati,longi]);
   useEffect(()=>{
     getLocs();
   },[parameterToSearch])
@@ -53,8 +76,7 @@ const Mep=()=> {
   })
   const getLocs = async () => {
     
-    // let resul= await Axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${longi},${lati}.json?types=poi&access_token=${ApiKey}`)
-    // console.log(resul.data.features[0].text);
+   
     try {
       let nearbyPlaces = await axios.get(`https://discover.search.hereapi.com/v1/discover?at=${lati},${longi}&q=${parameterToSearch}&lang=en-US&apiKey=SsQDGgfyRDH31cHPtVCPz2w9WimPDEbQjHyAR_Xb-NY`);
     var resultsNear=nearbyPlaces.data.items;
@@ -62,8 +84,7 @@ const Mep=()=> {
     
 
     } catch (error) {
-      // console.log("Can't access data");
-       //  console.log(` Latitude ${place.position.lat} Longitude ${place.position.lng}`)
+     console.log(error.message); 
     }
     
   };
@@ -72,8 +93,8 @@ const Mep=()=> {
 
   const showPosition = (position) => {
     console.log()
-    setLati(lati);
-    setLongi(longi);
+    setLati(position.coords.latitude);
+    setLongi(position.coords.longitude);
     console.log(lati + " ");
     console.log(longi);
 
@@ -104,26 +125,25 @@ const Mep=()=> {
     alert("You need to log in");
 
     setAlertShown(false);
+    history.push('/');
   }
   return (
     <>
     {isAuthenticated && (
       <div className="App">
-    <input type="text" value={query} onChange={(e)=>setQuery(e.target.value)} />
-    <button 
+    <TextField type="text" variant="standard" placeholder="Enter Place Category" value={query} onChange={(e)=>setQuery(e.target.value)} />
+    <Button 
+    variant="contained"
+    color="secondary"
     onClick={()=>setParameterToSearch(query)}
-    >Search Now</button>
+    >Search Now</Button>
       <ReactMapGL
         {...viewport}
         mapboxApiAccessToken="pk.eyJ1Ijoid2ltc2dkIiwiYSI6ImNrZzg4bGtvYTBiNmUycWxzYmlmdW95ZDQifQ.RT-TaJBBkcFVrVqwuusKpQ"
         onViewportChange={(viewport) => setViewport(viewport)}
         mapStyle="mapbox://styles/wimsgd/ckgaja7go1om919olowxdob9u"
       >
-        <Marker latitude={lati} longitude={longi}>
-       
-          <img src={Mar} alt="marker" width="10" height="10" />
-        
-        </Marker>
+        <MyPlace lati={lati} longi={longi}/>
        {places.map((place)=>{
         
        
@@ -160,21 +180,7 @@ const Mep=()=> {
         color="primary" 
         placeholder="rating" />
         <div style={{marginTop:"20px"}}>
-        <Button
-        variant="contained"
-        type="submit"
-        
-        color="primary" 
-        style={{
-          
-          marginRight:"auto"
-        }}
-        >Rate</Button>
-       
-        <Button
-        variant="contained"
-        color="primary" 
-        onClick={async()=>{
+        <SelectedButtons clicked={async()=>{
           
           setOpened(true);
          try {
@@ -184,24 +190,8 @@ const Mep=()=> {
            console.log(error.message);
          }
           
-        }}
-        style={{
-          
-          marginLeft:"auto"
-        }}
-        >View Rating</Button>
-        <Modal isOpen={opened} >
-        <h2>View Ratings</h2>
-        <Button variant="contained" color="secondary" onClick={()=>setOpened(false)}>Close</Button>
-       <ul>
-       {getRatings.map((rati)=>{
-        return(
-          <li key={rati.pid}>{rati.email} {rati.pname} {rati.rating}</li>
-        );
-       })}
-       </ul>
-        
-        </Modal>
+        }}/>
+       <MapModal opened={opened} getRatings={getRatings} ModalCloseClicked={()=>setOpened(false)} />
         </div>
         </form>
         </div>

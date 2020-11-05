@@ -41,7 +41,9 @@ const Farm = () => {
         <>
         <Card className={classes.root}  style={{
             width:"500px",
-            padding:"1.2rem 1.1rem"
+            padding:"0px 20px",
+            marginLeft:"auto",
+            marginRight:"auto"
     
         }} variant="outlined">
         <form onSubmit={(e)=>{
