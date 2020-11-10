@@ -1,0 +1,59 @@
+<h3>add new person</h3>
+<form method="POST" action="/user/add">
+    <input type="number" name="uid" placeholder="uid">
+    <input type="text" name="fname" placeholder="fName">
+    <input type="text" name="lname" placeholder="lName">
+    <input type="text" name="uemail" placeholder="uemail">
+    <input type="number" step="any" name="ulat" placeholder="ulat">
+    <input type="number" step="any" name="ulong" placeholder="ulong">
+    <input type ="submit" value="Submit" >
+</form>
+<h3>add new places</h3>
+<form method="POST" action="/place/add">
+    <input type="number" name="pid" placeholder="PID">
+    <input type="text" name="pname" placeholder="Name">
+    <input type="text" name="ptype" placeholder="Type">
+    <input type="text" name="padd" placeholder="ADDress">
+    <input type="number" step="any" name="plat" placeholder="Lat">
+    <input type="number" step="any" name="plong" placeholder="Long">
+    <input type="number" step="any" name="prating" placeholder="rating">
+    
+    <input type ="submit" value="Submit" >
+    </form>
+<h3>connect friends</h3>
+<form method="POST" action="/friends/connect">
+    <input type="number" name="uid1" placeholder="uid1">
+    <input type="number" name="uid2" placeholder="uid2">   
+    <input type ="submit" value="Submit" >
+    </form>
+ <h3>connect places</h3>
+    <form method="POST" action="/placedist/connect">
+        <input type="number" name="pid1" placeholder="uid1">
+        <input type="number" name="pid2" placeholder="uid2">   
+        <input type ="submit" value="Submit" >
+        </form>
+<h3>user rating to place</h3>
+        <form method="POST" action="/userratesplace/connect">
+        <input type="number" name="uid" placeholder="uid">
+        <input type="number" name="pid" placeholder="pid">   
+        <input type="number" name="rid" placeholder="rid"> 
+        <input type="number" name="rating" placeholder="rating">   
+
+        <input type ="submit" value="Submit">
+        </form>
+            
+<h3>User</h3>
+<ul>
+<% users.forEach(function(user){ %>
+    <li><%= user.fname %></li>
+
+<% }) %>
+</ul>
+
+<h3>places</h3>
+<ul>
+<% places.forEach(function(place){ %>
+    <li><%= place.pname %>, <%=place.pid%></li>
+
+<% }) %>
+</ul>
