@@ -18,5 +18,13 @@ CREATE TABLE rating(
     rating INTEGER,
     email VARCHAR(255),
     pname VARCHAR(255),
-    uname VARCHAR(255)
+    uname VARCHAR(255),
+    userphoto VARCHAR(255)
+);
+CREATE TABLE usertable(
+
+    uuid SERIAL PRIMARY KEY,
+      uname VARCHAR(255),
+      email VARCHAR(255),
+     userphoto VARCHAR(255)
 );

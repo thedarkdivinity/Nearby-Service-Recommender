@@ -109,6 +109,7 @@ const Mep=()=> {
     alert("submitted")
     const email=user.email;
     const uname=user.name;
+    const userPic=user.picture;
     const pname=selectedPlace.title;
     const pid=selectedPlace.position.lat * selectedPlace.position.lng;
     console.log(email);
@@ -117,7 +118,8 @@ const Mep=()=> {
       rating,
       email,
       pname,
-      uname
+      uname,
+      userPic
     };
     axios.post("http://localhost:5000/rate",ratingObject);
   }

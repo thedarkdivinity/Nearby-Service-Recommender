@@ -6,11 +6,13 @@ import Farm from './Farm';
 
 const Profile = () => {
     const { user ,isAuthenticated}=useAuth0();
+
+
     return (
         <div>
        
       {isAuthenticated &&(
-          <Farm/>
+          <Farm  />
       )}
        </div>
     )

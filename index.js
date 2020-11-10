@@ -12,7 +12,7 @@ app.get('/acquire',async (req,res)=>{
         const allEntries=await pool.query("SELECT * FROM  acquire");
         res.json(allEntries.rows);
     } catch (error) {
-        console.error(err.message)
+        console.error(error.message)
     }
 })
 
@@ -33,8 +33,8 @@ app.post('/rate',async (req,res)=>{
 
     try {
         //await
-        const {pid,rating,email,pname,uname}=req.body;
-        const newRating= await pool.query("INSERT INTO rating(pid,rating,email,pname,uname) VALUES($1,$2,$3,$4,$5) RETURNING *",[pid,rating,email,pname,uname])
+        const {pid,rating,email,pname,uname,userPic}=req.body;
+        const newRating= await pool.query("INSERT INTO rating(pid,rating,email,pname,uname,userphoto) VALUES($1,$2,$3,$4,$5,$6) RETURNING *",[pid,rating,email,pname,uname,userPic])
         console.log(req.body);
     } catch (error) {
         console.error(error.message);
@@ -49,6 +49,38 @@ app.get('/rate/:pid',async(req,res)=>{
         res.json(allRatings.rows);
     } catch (error) {
         console.error(error.message);
+    }
+});
+//GET ALL PLACES VISITED BY USER OF A PROFILE
+app.get('/rateme/:email',async(req,res)=>{
+    const {email}=req.params;
+      try {
+          //Await
+          const userRatings=await pool.query("SELECT * FROM rating WHERE email=$1",[email]);
+          res.json(userRatings.rows);
+      } catch (error) {
+          console.error(error.message);
+      }
+  });
+app.post('/user',async(req,res)=>{
+
+    const {name,email,picture} =req.body;
+    try {
+        
+        const User=await pool.query("INSERT INTO usertable(uname,email,userphoto) VALUES($1,$2,$3) RETURNING *",[name,email,picture]);
+        res.json(User.rows);
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+app.get('/user/:email',async(req,res)=>{
+    const { email } =req.params;
+    try {
+        const userD= await pool.query("SELECT * FROM usertable WHERE email=$1",[email]);
+        res.json(userD.rows);
+    } catch (error) {
+        console.error(error.message);
+   
     }
 })
 

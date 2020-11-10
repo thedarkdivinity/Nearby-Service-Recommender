@@ -7,6 +7,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import {useAuth0} from '@auth0/auth0-react';
+import { NavLink } from 'react-router-dom'
 const MapModal = ({opened,getRatings,ModalCloseClicked}) => {
     return (
         <Modal isOpen={opened} >
@@ -15,7 +16,9 @@ const MapModal = ({opened,getRatings,ModalCloseClicked}) => {
        <ul>
        {getRatings.map((rati)=>{
         return(
-          <li key={rati.pid}>{rati.email} {rati.pname} {rati.rating}</li>
+          <li key={rati.pid}>{rati.email} {rati.pname} {rati.rating}
+          <Button variant="contained" color="secondary" href={`/profile/${rati.email}/`}>View Profile</Button>
+          </li>
         );
        })}
        </ul>

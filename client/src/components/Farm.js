@@ -9,6 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import axios from 'axios';
 import Logoutbutton from './Logoutbutton';
+import  { useAuth0} from "@auth0/auth0-react"
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -37,6 +38,7 @@ const Farm = () => {
     const [pname,setPname]=useState("");
     const [lat,setLat]=useState("");
     const [lng,setLng]=useState("");
+    const { user }=useAuth0();
     return (
         <>
         <Card className={classes.root}  style={{
@@ -119,6 +121,19 @@ const Farm = () => {
           </CardContent>
         <CardActions >
         <Logoutbutton/>
+        <Button variant="contained" color="secondary" style={{marginRight:"auto"}} onClick={
+          ()=>{
+            const {name,email,picture} =user;
+            const dataToPost={
+              name,
+              email,
+              picture
+
+
+            };
+            axios.post("http://localhost:5000/user",dataToPost);
+          }
+        }>Store data </Button>
           <Button endIcon={<ArrowRightIcon/>} type="submit" variant="contained" color="primary" style={{marginLeft:"auto"}}>Submit</Button>
           
         </CardActions>
