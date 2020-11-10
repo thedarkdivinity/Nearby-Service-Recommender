@@ -54,7 +54,7 @@ app.get('/',function(req,res){
    // res.render('index');
 });
 
-//add person route
+//add user route
 
 app.post('/user/add',function(req,res){
     var uid=req.body.uid;
@@ -118,7 +118,7 @@ app.post('/friends/connect',function(req,res){
         console.log(error);
     });
 });
-
+//connect place to place
 app.post('/placedist/connect',function(req,res){
     var pid1=req.body.pid1;
     var pid2=req.body.pid2;
@@ -136,7 +136,7 @@ app.post('/placedist/connect',function(req,res){
         console.log(error);
     });
 });
-
+//connect user to place
 app.post('/userratesplace/connect',function(req,res){
     var uid=req.body.uid;
     var pid=req.body.pid;
