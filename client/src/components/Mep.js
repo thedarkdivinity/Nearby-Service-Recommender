@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import ReactMapGL, {  Marker ,Popup} from "react-map-gl";
+import ReactMapGL, {  Marker ,Popup,NavigationControl} from "react-map-gl";
 
 import Mar from "../../src/marker.jpg"
 import {useAuth0} from '@auth0/auth0-react';
@@ -128,6 +128,9 @@ const Mep=()=> {
         onViewportChange={(viewport) => setViewport(viewport)}
         mapStyle="mapbox://styles/wimsgd/ckgaja7go1om919olowxdob9u"
       >
+      <div style={{position: 'absolute', right: 100,top:100}}>
+          <NavigationControl />
+        </div>
         <MyPlace lati={lati} longi={longi}/>
        {places.map((place)=>{
         
