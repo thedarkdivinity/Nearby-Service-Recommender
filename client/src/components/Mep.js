@@ -1,34 +1,17 @@
 import React, { useState, useEffect } from "react";
 
+import ReactMapGL, {  Marker ,Popup} from "react-map-gl";
 
-import { makeStyles } from '@material-ui/core/styles';
-import ReactMapGL, { MapState, Marker ,Popup} from "react-map-gl";
-import { MapContext } from "react-mapbox-gl";
 import Mar from "../../src/marker.jpg"
 import {useAuth0} from '@auth0/auth0-react';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import Typography from '@material-ui/core/Typography';
+
 import { Button, TextField} from "@material-ui/core";
 import MyPlace from "./MyPlace";
 import SelectedButtons from "./SelectedButtons";
 import MapModal from "./MapModal";
-const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
-});
+
 const Mep=()=> {
   const history = useHistory();
   const [viewport, setViewport] = useState({

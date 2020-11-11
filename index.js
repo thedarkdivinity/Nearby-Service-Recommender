@@ -46,18 +46,18 @@ app.get('/rate/:pid',async(req,res)=>{
     try {
         //Await
         const allRatings=await pool.query("SELECT * FROM rating WHERE pid=$1",[pid]);
-        res.json(allRatings.rows);
+        res.status(200).json(allRatings.rows);
     } catch (error) {
         console.error(error.message);
     }
 });
-//GET ALL PLACES VISITED BY USER OF A PROFILE
+//GET ALL PLACES RATED BY USER OF A PROFILE
 app.get('/rateme/:email',async(req,res)=>{
     const {email}=req.params;
       try {
           //Await
           const userRatings=await pool.query("SELECT * FROM rating WHERE email=$1",[email]);
-          res.json(userRatings.rows);
+          res.status(200).json(userRatings.rows);
       } catch (error) {
           console.error(error.message);
       }
@@ -68,7 +68,7 @@ app.post('/user',async(req,res)=>{
     try {
         
         const User=await pool.query("INSERT INTO usertable(uname,email,userphoto) VALUES($1,$2,$3) RETURNING *",[name,email,picture]);
-        res.json(User.rows);
+        res.status(200).json(User.rows);
     } catch (error) {
         console.error(error.message);
     }
@@ -77,7 +77,7 @@ app.get('/user/:email',async(req,res)=>{
     const { email } =req.params;
     try {
         const userD= await pool.query("SELECT * FROM usertable WHERE email=$1",[email]);
-        res.json(userD.rows);
+        res.status(200).json(userD.rows);
     } catch (error) {
         console.error(error.message);
    

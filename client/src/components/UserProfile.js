@@ -8,6 +8,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import VisitedPlaces from './VisitedPlaces';
 const useStyles = makeStyles({
     root: {
       minWidth: 275,
@@ -43,10 +44,7 @@ const UserProfile = () => {
       setUserName(userData.data[0].uname);
       setUserEmail(userData.data[0].email);
       setUserDp(userData.data[0].userphoto);
-      // console.log(userData.data[0]);
-      // console.log(userName);
-      // console.log(userEmail);
-      // console.log(userdp);
+      
       } catch (error) {
           console.log(error.message);
 
@@ -73,10 +71,10 @@ const UserProfile = () => {
         <div className="userProfile">
         <Card className={classes.root}>
         <CardContent>
-          <Typography className={classes.title} color="textSecondary" gutterBottom>
+          <Typography style={{textAlign:"center"}} className={classes.title} color="textSecondary" gutterBottom>
             {userName}
           </Typography>
-          <Typography variant="h5" component="h2">
+          <Typography style={{textAlign:"center"}} variant="h5" component="h2">
           {userEmail}
           </Typography>
           <img src={userdp} alt="userdp" style={{
@@ -87,20 +85,13 @@ const UserProfile = () => {
             display:"block",
             marginRight:"auto"
           }}/>
-          <Typography className={classes.pos} color="textSecondary">
-            yo
-          </Typography>
-          <Typography variant="body2" component="p">
-            well meaning and kindly.
-            <br />
-            {'"a benevolent smile"'}
-          </Typography>
-          
+         
+
+          <VisitedPlaces email={userEmail}/>
         </CardContent>
-        <CardActions>
-          <Button size="small">Learn More</Button>
-        </CardActions>
+       
       </Card>
+      
         </div>
     )
 }
