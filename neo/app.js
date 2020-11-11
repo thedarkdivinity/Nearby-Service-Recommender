@@ -156,6 +156,22 @@ app.post('/userratesplace/connect',function(req,res){
         console.log(error);
     });
 });
+app.post('/placerecommendation',function(req,res){
+    var r=req.body.r;
+    var ptype=req.body.ptype;
+    //console.log(name);
+    session
+     .run("MATCH(me:user)-[:friends]->(f),(f)-[r:rates]-(p:place) WHERE r.rating > 3 AND NOT (me)-[:rates]->(p) AND p.ptype=$type AND distance(point({latitude:toFloat(me.ulat),longitude:toFloat(me.ulong)}),point({latitude:toFloat(p.plat),longitude:toFloat(p.plong)})) < $radius RETURN distinct p AS place,count(*) AS count  ORDER BY count DESC LIMIT 10", {radius:r,type:ptype})
+
+    .then(function(result){
+        res.redirect('/');
+       session.close();
+        })
+
+    .catch(function(error){
+        console.log(error);
+    });
+});
 
 
 app.listen(3000);
