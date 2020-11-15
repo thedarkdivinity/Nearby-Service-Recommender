@@ -174,8 +174,8 @@ app.post('/placerecommendation',function(req,res){
 });
 
 
-app.listen(3000);
+app.listen(9000);
 
-console.log('Server started on port 3000');
+console.log('Server started on port 9000');
 
 module.export=app;
