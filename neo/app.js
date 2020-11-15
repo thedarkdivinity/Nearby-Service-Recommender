@@ -58,15 +58,14 @@ app.get('/',function(req,res){
 
 app.post('/user/add',function(req,res){
     var uid=req.body.uid;
-    var fname=req.body.fname;
-    var lname=req.body.lname;
+    var uname=req.body.uname;
     var uemail=req.body.uemail;
     var ulat=req.body.ulat;
     var ulong=req.body.ulong;
 
     //console.log(name);
     session
-     .run("CREATE (n:user {uid:$uidp,fname:$fnamep,lname:$lnamep,uemail:$uemailp,ulat:$ulatp,ulong:$ulongp}) RETURN n", {uidp:uid,fnamep:fname,lnamep:lname,ulatp:ulat,ulongp:ulong,uemailp:uemail})
+     .run("CREATE (n:user {uid:$uidp,uname:$unamep,uemail:$uemailp,ulat:$ulatp,ulong:$ulongp}) RETURN n", {uidp:uid,unamep:uname,ulatp:ulat,ulongp:ulong,uemailp:uemail})
 
     .then(function(result){
         res.redirect('/');
