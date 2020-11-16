@@ -12,10 +12,10 @@ const Profile = () => {
         <div>
        
       {isAuthenticated &&(
-          <Farm  />
+          <Farm/>
       )}
        </div>
     )
 }
 
-export default Profile
+export default Profile;
