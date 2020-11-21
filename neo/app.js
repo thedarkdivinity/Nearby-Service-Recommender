@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
-const logger = require("morgan");
+const cors=require('cors');
+
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const app = express();
@@ -9,9 +10,11 @@ const neo4j = require("neo4j-driver");
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+
 //middleware
-app.use(logger("dev"));
+
 app.use(bodyParser.json());
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
@@ -41,14 +44,15 @@ app.get("/places",async(req,res)=>{
 //add user route
 
 app.post("/user/add", async function (req, res) {
-  const { uid, uname, uemail, ulat, ulong } = req.body;
+  const {name,email} = req.body;
 
  const newUser= await  session
     .run(
-      "CREATE (n:user {uid:$uid,uname:$uname,uemail:$uemail,ulat:$ulat,ulong:$ulong}) RETURN n",
-      { uid, uname, ulat, ulong, uemail }
+      "CREATE (n:user {name:$name,email:$email}) RETURN n",
+      {name,email }
     );
     res.status(200).json(newUser);
+    console.log(newUser);
 
 });
 //add place route
@@ -73,13 +77,13 @@ app.post("/place/add", async function (req, res) {
 });
 
 //frnds connect route
-app.post("/friends/connect",  async function (req, res) {
-  const { uid1, uid2 } = req.body;
+app.post("/friends/add",  async function (req, res) {
+  const { email1, email2 } = req.body;
 
   const connection= await session
     .run(
-      "MATCH(a:user {uid:$uid1}),(b:user {uid:$uid2}) MERGE(a)-[r:friends]->(b) RETURN r",
-      {uid1,uid2 }
+      "MATCH(a:user {email:$email1}),(b:user {email:$email2}) MERGE(a)-[r:friends]->(b) RETURN r",
+      {email1,email2 }
     );
     res.status(200).json(connection);
 
@@ -106,31 +110,32 @@ app.post("/placedist/connect",  async function (req, res) {
 });
 //connect user to place
 app.post("/userratesplace/connect", async function (req, res) {
-  const { uid, pid, rating, rid } = req.body;
+  const { email, pid, rating, rid } = req.body;
 
 
   const UserRatePlaces= await  session
     .run(
-      "MATCH(a:user {uid:$uid}),(b:place {pid:$pid}) MERGE(a)-[r:rates {rating:$rating,rid:$rid} ]->(b) RETURN r",
-      { uid, pid, rating, rid }
+      "MATCH(a:user {email:$email}),(b:place {pid:$pid}) MERGE(a)-[r:rates {rating:$rating,rid:$rid} ]->(b) RETURN r",
+      { email, pid, rating, rid }
     );
     res.status(200).json(UserRatePlaces);
 
     
 });
-app.post("/placerecommendation", async function (req, res) {
+//RECOMMENDING PLACES TO USERS
+// app.post("/placerecommendation", async function (req, res) {
 
-    const {r,ptype}=req.body;
+//     const {r,ptype}=req.body;
  
-  //console.log(name);
- const placerecommendation= await session
-    .run(
-      "MATCH(me:user)-[:friends]->(f),(f)-[r:rates]-(p:place) WHERE r.rating > 3 AND NOT (me)-[:rates]->(p) AND p.ptype=$type AND distance(point({latitude:toFloat(me.ulat),longitude:toFloat(me.ulong)}),point({latitude:toFloat(p.plat),longitude:toFloat(p.plong)})) < $radius RETURN distinct p AS place,count(*) AS count  ORDER BY count DESC LIMIT 10",
-      { radius: r, type: ptype }
-    )
+//   //console.log(name);
+//  const placerecommendation= await session
+//     .run(
+//       "MATCH(me:user)-[:friends]->(f),(f)-[r:rates]-(p:place) WHERE r.rating > 3 AND NOT (me)-[:rates]->(p) AND p.ptype=$type AND distance(point({latitude:toFloat(me.ulat),longitude:toFloat(me.ulong)}),point({latitude:toFloat(p.plat),longitude:toFloat(p.plong)})) < $radius RETURN distinct p AS place,count(*) AS count  ORDER BY count DESC LIMIT 10",
+//       { radius: r, type: ptype }
+//     )
 
-  res.status(200).json(placerecommendation);
-});
+//   res.status(200).json(placerecommendation);
+// });
 
 app.listen(9000);
 

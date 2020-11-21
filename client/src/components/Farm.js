@@ -131,7 +131,13 @@ const Farm = () => {
 
 
             };
-            axios.post("http://localhost:5000/user",dataToPost);
+            const dataToPostToGraph={
+              name,
+              email
+            }
+            
+             axios.post("http://localhost:5000/user",dataToPost);
+            axios.post("http://localhost:9000/user/add",dataToPostToGraph);
           }
         }>Store data </Button>
           <Button endIcon={<ArrowRightIcon/>} type="submit" variant="contained" color="primary" style={{marginLeft:"auto"}}>Submit</Button>

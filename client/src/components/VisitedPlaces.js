@@ -10,7 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import Axios from 'axios';
 
 
-
+//GETTING PLACES VISITED BY USERS WRT EMAIL ID
 const VisitedPlaces = ({email}) => {
     const [visitedPlaces,setVisitedPlaces]=useState([]);
     
