@@ -50,6 +50,8 @@ const Farm = () => {
         }} variant="outlined">
         <form onSubmit={(e)=>{
           e.preventDefault();
+        
+          const {name,email,picture} =user;
           const submission={
             email,
             fname,
@@ -58,8 +60,23 @@ const Farm = () => {
             lat,
             lng
 
-          }
+          };
+            const dataToPost={
+              name,
+              email,
+              picture
+
+
+            };
+            const dataToPostToGraph={
+              name,
+              email
+            }
+            
+             axios.post("http://localhost:5000/user",dataToPost);
+            axios.post("http://localhost:9000/user/add",dataToPostToGraph);
           axios.post("http://localhost:5000/acquire",submission);
+          
           history.push('/map');
         }}>
         <CardContent>
@@ -121,25 +138,7 @@ const Farm = () => {
           </CardContent>
         <CardActions >
         <Logoutbutton/>
-        <Button variant="contained" color="secondary" style={{marginRight:"auto"}} onClick={
-          ()=>{
-            const {name,email,picture} =user;
-            const dataToPost={
-              name,
-              email,
-              picture
-
-
-            };
-            const dataToPostToGraph={
-              name,
-              email
-            }
-            
-             axios.post("http://localhost:5000/user",dataToPost);
-            axios.post("http://localhost:9000/user/add",dataToPostToGraph);
-          }
-        }>Store data </Button>
+ 
           <Button endIcon={<ArrowRightIcon/>} type="submit" variant="contained" color="primary" style={{marginLeft:"auto"}}>Submit</Button>
           
         </CardActions>

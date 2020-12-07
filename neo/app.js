@@ -48,7 +48,7 @@ app.post("/user/add", async function (req, res) {
 
  const newUser= await  session
     .run(
-      "CREATE (n:user {name:$name,email:$email}) RETURN n",
+      "MERGE (n:user {name:$name,email:$email}) RETURN n",
       {name,email }
     );
     res.status(200).json(newUser);
