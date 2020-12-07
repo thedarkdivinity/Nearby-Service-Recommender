@@ -22,6 +22,7 @@ const Mep=()=> {
     height: "100vh",
   });
   const { isAuthenticated ,user } = useAuth0();
+  const [radius,setRadius]=useState(10);
   const [rating,setRating]=useState(1);
   const [opened,setOpened]=useState(false);
   const [lati, setLati] = useState(0);
@@ -95,6 +96,8 @@ const Mep=()=> {
     const userPic=user.picture;
     const pname=selectedPlace.title;
     const pid=selectedPlace.position.lat * selectedPlace.position.lng;
+    const latitude=selectedPlace.position.lat;
+    const longitude=selectedPlace.position.lng;
     console.log(email);
     const ratingObject={
       pid,
@@ -104,7 +107,26 @@ const Mep=()=> {
       uname,
       userPic
     };
+    const graphRatingObject={
+      pid,
+      rating,
+      email,
+      pname,
+    }
+    const addedPlace={
+      pid,
+      pname,
+      latitude,
+      longitude
+    };
+    const ratedPlace={
+      pid,
+      email,
+      rating
+    };
+    axios.post("http://localhost:9000/place/add",addedPlace);
     axios.post("http://localhost:5000/rate",ratingObject);
+    axios.post("http://localhost:9000/userratesplace/connect",graphRatingObject);
   }
   if(!isAuthenticated && alertShown){
     alert("You need to log in");
@@ -122,6 +144,11 @@ const Mep=()=> {
     color="secondary"
     onClick={()=>setParameterToSearch(query)}
     >Search Now</Button>
+    <TextField type="number" variant="standard" placeholder="Enter radius" value={radius} onChange={(e)=>setRadius(e.target.value)} />
+
+    
+    
+
       <ReactMapGL
         {...viewport}
         mapboxApiAccessToken="pk.eyJ1Ijoid2ltc2dkIiwiYSI6ImNrZzg4bGtvYTBiNmUycWxzYmlmdW95ZDQifQ.RT-TaJBBkcFVrVqwuusKpQ"

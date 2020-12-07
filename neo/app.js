@@ -55,22 +55,20 @@ app.post("/user/add", async function (req, res) {
     console.log(newUser);
 
 });
-//add place route
+//add place 
 app.post("/place/add", async function (req, res) {
-  const { pid, pname, prating, padd, plat, plong, ptype } = req.body;
+  const { pid, pname,latitude,longitude } = req.body;
 
   //console.log(name);
  const place=  await session
     .run(
-      "CREATE (n:place {pid:$pid,pname:$pname,plat:$plat,plong:$plong,padd:$padd,prating:$prating,ptype:$ptype}) RETURN n",
+      "MERGE  (n:place {pid:$pid,pname:$pname,latitude:$latitude,longitude:$longitude}) RETURN n",
       {
         pid,
         pname,
         prating,
-        ptype,
-        plat,
-       plong,
-        padd,
+        latitude,
+        longitude
       }
     );
     res.status(200).json(place);
@@ -89,6 +87,14 @@ app.post("/friends/add",  async function (req, res) {
 
    
 });
+app.post("/friends/check",async(req,res)=>{
+  const { email1, email2 } = req.body;
+
+  const check= await session.run("MATCH(a:user {email:$email1})<-[r:friends]-(b:user {email:$email2}) RETURN a,b,r",
+  {email1,email2}
+  );
+  res.status(200).json(check.records);
+})
 //connect place to place
 app.post("/placedist/connect",  async function (req, res) {
   const { pid1, pid2 } = req.body;
@@ -110,13 +116,13 @@ app.post("/placedist/connect",  async function (req, res) {
 });
 //connect user to place
 app.post("/userratesplace/connect", async function (req, res) {
-  const { email, pid, rating, rid } = req.body;
+  const { email, pid, rating} = req.body;
 
 
   const UserRatePlaces= await  session
     .run(
-      "MATCH(a:user {email:$email}),(b:place {pid:$pid}) MERGE(a)-[r:rates {rating:$rating,rid:$rid} ]->(b) RETURN r",
-      { email, pid, rating, rid }
+      "MATCH(a:user {email:$email}),(b:place {pid:$pid}) MERGE(a)-[r:rates {rating:$rating} ]->(b) RETURN r,a,b",
+      { email, pid, rating }
     );
     res.status(200).json(UserRatePlaces);
 
@@ -136,7 +142,15 @@ app.post("/userratesplace/connect", async function (req, res) {
 
 //   res.status(200).json(placerecommendation);
 // });
-
+//SIMPLIFIED RECOMMENDATION QUERY 
+app.post("/recommend",async (req,res)=>{
+const {email}=req.body;
+const recommendation=await session.run(
+  "MATCH(me:user{email:$email})-[:friends]->(f:user),(f)-[r:rates]->(p:place)  RETURN DISTINCT p AS place",
+  {email:email}
+);
+res.status(200).json(recommendation);
+});
 app.listen(9000);
 
 console.log("Server started on port 9000");

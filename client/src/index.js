@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './App.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+import swDev from './swDev';
 import {Auth0Provider} from '@auth0/auth0-react';
 import { BrowserRouter } from 'react-router-dom';
 const domain="sayush.us.auth0.com";
@@ -22,4 +22,5 @@ ReactDOM.render(
  ,
   document.getElementById('root')
 );
-serviceWorker.unregister();
+
+swDev();
