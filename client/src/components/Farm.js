@@ -32,12 +32,12 @@ const useStyles = makeStyles({
 const Farm = () => {
     const classes = useStyles();
     const history = useHistory();
-    const [email,setEmail]=useState("");
-    const [fname,setFname]=useState("");
-    const [lname,setLname]=useState("");
-    const [pname,setPname]=useState("");
-    const [lat,setLat]=useState("");
-    const [lng,setLng]=useState("");
+    // const [email,setEmail]=useState("");
+    // const [fname,setFname]=useState("");
+    // const [lname,setLname]=useState("");
+    // const [pname,setPname]=useState("");
+    // const [lat,setLat]=useState("");
+    // const [lng,setLng]=useState("");
     const { user }=useAuth0();
     return (
         <>
@@ -52,15 +52,15 @@ const Farm = () => {
           e.preventDefault();
         
           const {name,email,picture} =user;
-          const submission={
-            email,
-            fname,
-            lname,
-            pname,
-            lat,
-            lng
+          // const submission={
+          //   email,
+          //   fname,
+          //   lname,
+          //   pname,
+          //   lat,
+          //   lng
 
-          };
+          // };
             const dataToPost={
               name,
               email,
@@ -75,7 +75,7 @@ const Farm = () => {
             
              axios.post("http://localhost:5000/user",dataToPost);
             axios.post("http://localhost:9000/user/add",dataToPostToGraph);
-          axios.post("http://localhost:5000/acquire",submission);
+         
           
           history.push('/map');
         }}>
@@ -84,57 +84,7 @@ const Farm = () => {
             Add A Store
           </Typography>
         
-          <TextField variant="standard" color="primary" label="Email" 
-          value={email}
-          onChange={(e)=>setEmail(e.target.value)}
           
-          placeholder="Enter Email" fullWidth/>
-          <TextField 
-          variant="standard" 
-          value={fname}
-          onChange={(e)=>setFname(e.target.value)}
-          color="primary" 
-          label="Fname" 
-          style={{marginTop:"1.1rem"}} 
-          placeholder="Enter Email" 
-          fullWidth/>
-          <TextField 
-          variant="standard" 
-          color="primary" 
-          label="Lname" 
-          value={lname}
-          onChange={(e)=>setLname(e.target.value)}
-          style={{marginTop:"1.1rem"}} 
-          placeholder="Enter Email" 
-          fullWidth/>
-          <TextField 
-          variant="standard" 
-          color="primary" 
-          value={pname}
-          onChange={(e)=>setPname(e.target.value)}
-          label="StoreName" 
-          style={{marginTop:"1.1rem"}} 
-          placeholder="Enter Email" 
-          
-          fullWidth/>
-          <TextField 
-          variant="standard" 
-          color="primary" 
-          label="Latitude" 
-          style={{marginTop:"1.1rem"}} 
-          value={lat}
-          onChange={(e)=>setLat(e.target.value)}
-          placeholder="Enter Latitude" 
-          fullWidth/>
-          <TextField 
-          variant="standard" 
-          color="primary" 
-          label="Longitude" 
-          value={lng}
-          onChange={(e)=>setLng(e.target.value)}
-          style={{marginTop:"1.1rem"}} 
-          placeholder="Enter Longitude" 
-          fullWidth/>
           </CardContent>
         <CardActions >
         <Logoutbutton/>

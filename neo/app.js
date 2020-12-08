@@ -66,7 +66,7 @@ app.post("/place/add", async function (req, res) {
       {
         pid,
         pname,
-        prating,
+       
         latitude,
         longitude
       }

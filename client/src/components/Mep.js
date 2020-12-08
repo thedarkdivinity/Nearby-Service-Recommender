@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-
+import AddIcon from '@material-ui/icons/Add';
 import ReactMapGL, {  Marker ,Popup,NavigationControl} from "react-map-gl";
-
+import Modal from "react-modal";
 import Mar from "../../src/marker.jpg"
 import {useAuth0} from '@auth0/auth0-react';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-
-import { Button, TextField} from "@material-ui/core";
+import CancelIcon from '@material-ui/icons/Cancel';
+import { Button, IconButton, TextField} from "@material-ui/core";
 import MyPlace from "./MyPlace";
 import SelectedButtons from "./SelectedButtons";
 import MapModal from "./MapModal";
@@ -27,12 +27,15 @@ const Mep=()=> {
   const [opened,setOpened]=useState(false);
   const [lati, setLati] = useState(0);
   const [longi, setLongi] = useState(0);
+  const [locationModal,setLocationModal]=useState(false)
   const [places,setPlaces]=useState([]);
   const [query,setQuery]=useState("");
   const [selectedPlace,setSelectedPlace]=useState(null);
   const [parameterToSearch,setParameterToSearch]=useState("petrol stations");
   const [alertShown,setAlertShown]=useState(true);
+  const [jagahName,setJagahName]=useState("");
   const [getRatings,setGetRatings]=useState([]);
+ 
   const ApiKey =
     "pk.eyJ1Ijoid2ltc2dkIiwiYSI6ImNrZzg4bGtvYTBiNmUycWxzYmlmdW95ZDQifQ.RT-TaJBBkcFVrVqwuusKpQ";
   const HereKey = "SsQDGgfyRDH31cHPtVCPz2w9WimPDEbQjHyAR_Xb-NY";
@@ -85,8 +88,6 @@ const Mep=()=> {
     getLocs();
   };
 
-
-
   //HANDLE RATINGS FORM
   const ratingHandler=(e)=>{
     e.preventDefault();
@@ -128,6 +129,18 @@ const Mep=()=> {
     axios.post("http://localhost:5000/rate",ratingObject);
     axios.post("http://localhost:9000/userratesplace/connect",graphRatingObject);
   }
+  const AddPlace=()=>{
+    const pid= lati * longi;
+    const newPlace={
+     pid,
+     pname:jagahName,
+     latitude:lati,
+     longitude:longi
+
+    };
+    axios.post("http://localhost:9000/place/add",newPlace);
+    
+  }
   if(!isAuthenticated && alertShown){
     alert("You need to log in");
 
@@ -138,27 +151,46 @@ const Mep=()=> {
     <>
     {isAuthenticated && (
       <div className="App">
+      <div style={{display:"flex",justifyContent:"space-around",flexWrap:"wrap"}}>
     <TextField type="text" variant="standard" placeholder="Enter Place Category" value={query} onChange={(e)=>setQuery(e.target.value)} />
     <Button 
     variant="contained"
     color="secondary"
     onClick={()=>setParameterToSearch(query)}
     >Search Now</Button>
+    
     <TextField type="number" variant="standard" placeholder="Enter radius" value={radius} onChange={(e)=>setRadius(e.target.value)} />
 
+    <Button 
+    variant="contained"
+    color="secondary"
+      onClick={()=>setLocationModal(true)}
+   
+    >Add  New Place at my location</Button>
+    <Modal isOpen={locationModal}>
+    <IconButton aria-label="closeButton" onClick={()=>setLocationModal(false)} style={{marginLeft:"auto"}}><CancelIcon htmlColor="red" /></IconButton>
+  
+   
+    <TextField fullWidth variant="standard" value={jagahName} onChange={(e)=>{
+      setJagahName(e.target.value);
+    }} label="place name"/>
+    <Button variant="contained"  color="secondary" onClick={AddPlace} endIcon={<AddIcon/>}>Add this Place </Button>
     
-    
+    </Modal>
+    </div>
 
       <ReactMapGL
         {...viewport}
         mapboxApiAccessToken="pk.eyJ1Ijoid2ltc2dkIiwiYSI6ImNrZzg4bGtvYTBiNmUycWxzYmlmdW95ZDQifQ.RT-TaJBBkcFVrVqwuusKpQ"
         onViewportChange={(viewport) => setViewport(viewport)}
         mapStyle="mapbox://styles/wimsgd/ckgaja7go1om919olowxdob9u"
+        
       >
       <div style={{position: 'absolute', right: 100,top:100}}>
           <NavigationControl />
         </div>
         <MyPlace lati={lati} longi={longi}/>
+        
        {places.map((place)=>{
         
        
@@ -173,6 +205,7 @@ const Mep=()=> {
         </Marker>
         )
        })}
+
        {selectedPlace ? (
         
         <Popup latitude={selectedPlace.position.lat} longitude={selectedPlace.position.lng}
@@ -206,6 +239,7 @@ const Mep=()=> {
          }
           
         }}/>
+
        <MapModal opened={opened} getRatings={getRatings} ModalCloseClicked={()=>setOpened(false)} />
         </div>
         </form>
