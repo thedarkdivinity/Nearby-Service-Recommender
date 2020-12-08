@@ -23,17 +23,18 @@ const driver = neo4j.driver(
   "bolt://localhost",
   neo4j.auth.basic("neo4j", "sayush")
 );
-const session = driver.session();
+var session;
 //home route
 
 app.get("/",  async function (req, res) {
+  session = driver.session();
   const users=await session.run("MATCH (n:user) RETURN n");
   res.status(200).json(users);
     
 
 });
 app.get("/places",async(req,res)=>{
-  
+      session = driver.session();
         const places=await session.run("MATCH (n:place) RETURN n");
         res.status(200).json(places);
 
@@ -44,6 +45,7 @@ app.get("/places",async(req,res)=>{
 //add user route
 
 app.post("/user/add", async function (req, res) {
+  session = driver.session();
   const {name,email} = req.body;
 
  const newUser= await  session
@@ -57,6 +59,7 @@ app.post("/user/add", async function (req, res) {
 });
 //add place 
 app.post("/place/add", async function (req, res) {
+  session = driver.session();
   const { pid, pname,latitude,longitude } = req.body;
 
   //console.log(name);
@@ -75,12 +78,14 @@ app.post("/place/add", async function (req, res) {
 });
 //VIEW PLACES
 app.get("/place/view", async(req,res)=>{
+  session = driver.session();
   const allPlaces= await session.run("MATCH (p:place) RETURN p");
   res.status(200).json(allPlaces);
 });
 
 //frnds connect route
 app.post("/friends/add",  async function (req, res) {
+  session = driver.session();
   const { email1, email2 } = req.body;
 
   const connection= await session
@@ -93,6 +98,7 @@ app.post("/friends/add",  async function (req, res) {
    
 });
 app.post("/friends/check",async(req,res)=>{
+  session = driver.session();
   const { email1, email2 } = req.body;
 
   const check= await session.run("MATCH(a:user {email:$email1})<-[r:friends]-(b:user {email:$email2}) RETURN a,b,r",
@@ -102,6 +108,7 @@ app.post("/friends/check",async(req,res)=>{
 })
 //connect place to place
 app.post("/placedist/connect",  async function (req, res) {
+  session = driver.session();
   const { pid1, pid2 } = req.body;
 
    session
@@ -112,7 +119,7 @@ app.post("/placedist/connect",  async function (req, res) {
 
     .then(function (result) {
       res.redirect("/");
-      session.close();
+   //   session.close();
     })
 
     .catch(function (error) {
@@ -121,6 +128,7 @@ app.post("/placedist/connect",  async function (req, res) {
 });
 //connect user to place
 app.post("/userratesplace/connect", async function (req, res) {
+  session = driver.session();
   const { pid,rating,email,pname} = req.body;
 
 
@@ -135,7 +143,7 @@ app.post("/userratesplace/connect", async function (req, res) {
 });
 //RECOMMENDING PLACES TO USERS
 // app.post("/placerecommendation", async function (req, res) {
-
+//session = driver.session();
 //     const {r,ptype}=req.body;
  
 //   //console.log(name);
@@ -149,6 +157,7 @@ app.post("/userratesplace/connect", async function (req, res) {
 // });
 //SIMPLIFIED RECOMMENDATION QUERY 
 app.post("/recommend",async (req,res)=>{
+  session = driver.session();
 const {email}=req.body;
 const recommendation=await session.run(
   "MATCH(me:user{email:$email})-[:friends]->(f:user),(f)-[r:rates]->(p:place)  RETURN DISTINCT p AS place",
