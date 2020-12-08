@@ -32,7 +32,7 @@ const ContactForm = () => {
     return (
         <Card className={classes.root} style={{marginTop:"40px"}}>
       <CardContent>
-        <Typography variant="h2" style={{textAlign:"center"}} color="textSecondary" gutterBottom>
+        <Typography variant="h2" className="animate__animated animate__tada forever" style={{textAlign:"center"}} color="textSecondary" gutterBottom>
           Contact Us
         </Typography>
        <TextField fullWidth label="Name" style={{marginTop:"20px"}} variant="standard" color="secondary" />
@@ -40,9 +40,10 @@ const ContactForm = () => {
        <TextField fullWidth label="Message" style={{marginTop:"20px"}} variant="standard" color="secondary" />
       </CardContent>
       <CardActions>
-        <Button size="medium" style={{
-            marginLeft:"auto"
-        }} variant="contained" color="secondary" endIcon={<SendIcon/>}>Submit</Button>
+        <Button size="large" style={{
+            marginLeft:"auto",
+           
+        }} variant="contained" color="secondary" endIcon={<SendIcon className="animate__animated animate__rubberBand forever"/>}>Submit</Button>
       </CardActions>
     </Card>
     )

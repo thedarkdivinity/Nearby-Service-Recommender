@@ -170,6 +170,9 @@ const Mep=()=> {
       onClick={()=>setLocationModal(true)}
    
     >Add  New Place at my location</Button>
+    
+  
+    
     <Modal isOpen={locationModal}>
     <IconButton aria-label="closeButton" onClick={()=>setLocationModal(false)} style={{marginLeft:"auto"}}><CancelIcon htmlColor="red" /></IconButton>
   
