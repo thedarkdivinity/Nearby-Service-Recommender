@@ -8,7 +8,7 @@ const SelectedButtons = ({clicked}) => {
         variant="contained"
         type="submit"
         
-        color="primary" 
+        color="secondary" 
         style={{
           
           marginRight:"auto"
@@ -16,13 +16,14 @@ const SelectedButtons = ({clicked}) => {
         >Rate</Button>  
         <Button
         variant="contained"
-        color="primary" 
+        color="secondary" 
         onClick={clicked}
         style={{
           
           marginLeft:"auto"
         }}
         >View Rating</Button>
+        
         </>
     )
 }

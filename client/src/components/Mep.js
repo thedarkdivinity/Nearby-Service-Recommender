@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import AddIcon from '@material-ui/icons/Add';
 import ReactMapGL, {  Marker ,Popup,NavigationControl} from "react-map-gl";
 import Modal from "react-modal";
-import Mar from "../../src/marker.jpg"
+import Mar from "../../src/marker.jpg";
+import Drawer from '@material-ui/core/Drawer';
 import {useAuth0} from '@auth0/auth0-react';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
@@ -23,6 +24,7 @@ const Mep=()=> {
   });
   const { isAuthenticated ,user } = useAuth0();
   const [radius,setRadius]=useState(10);
+  const [drawerOpen,setDrawerOpen]=useState(false);
   const [rating,setRating]=useState(1);
   const [opened,setOpened]=useState(false);
   const [lati, setLati] = useState(0);
@@ -82,8 +84,8 @@ const Mep=()=> {
     console.log()
     setLati(position.coords.latitude);
     setLongi(position.coords.longitude);
-    console.log(lati + " ");
-    console.log(longi);
+    // console.log(lati + " ");
+    // console.log(longi);
 
     getLocs();
   };
@@ -99,7 +101,7 @@ const Mep=()=> {
     const pid=selectedPlace.position.lat * selectedPlace.position.lng;
     const latitude=selectedPlace.position.lat;
     const longitude=selectedPlace.position.lng;
-    console.log(email);
+    // console.log(email);
     const ratingObject={
       pid,
       rating,
@@ -156,10 +158,11 @@ const Mep=()=> {
     <Button 
     variant="contained"
     color="secondary"
+    style={{display:"block"}}
     onClick={()=>setParameterToSearch(query)}
     >Search Now</Button>
     
-    <TextField type="number" variant="standard" placeholder="Enter radius" value={radius} onChange={(e)=>setRadius(e.target.value)} />
+    <TextField type="number" variant="standard" placeholder="Enter radius" style={{display:"block"}} value={radius} onChange={(e)=>setRadius(e.target.value)} />
 
     <Button 
     variant="contained"
@@ -210,12 +213,13 @@ const Mep=()=> {
         
         <Popup latitude={selectedPlace.position.lat} longitude={selectedPlace.position.lng}
         
-
+        
 
 
         >
         <div>
         <h3>{selectedPlace.title}</h3>
+        
         <form onSubmit={ratingHandler}>
         <TextField 
         type="number" 
@@ -237,16 +241,39 @@ const Mep=()=> {
          } catch (error) {
            console.log(error.message);
          }
+         
           
         }}/>
-
+        <Button
+        variant="contained"
+        color="secondary" 
+        onClick={()=>setDrawerOpen(true)}
+        style={{
+          
+        display:"block",
+        marginTop:"10px"
+        }}
+        >Want to know more</Button>
+        
        <MapModal opened={opened} getRatings={getRatings} ModalCloseClicked={()=>setOpened(false)} />
         </div>
         </form>
         </div>
         </Popup>
        ): null}
+     
       </ReactMapGL>
+      <Drawer anchor="left"
+     
+      open={drawerOpen} onClose={()=>setDrawerOpen(false)}>
+      <div style={{
+        height:"100vh",
+        width:"300px"
+      }}>
+      
+      dddd
+      </div>
+      </Drawer>
     </div>
 
     )}
