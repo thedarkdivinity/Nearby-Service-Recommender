@@ -89,7 +89,7 @@ const SearchAppBar=()=> {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            NavNirman
+            Nearby Service Recommender
           </Typography>
          
           <div className={classes.search}>

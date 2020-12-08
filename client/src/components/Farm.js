@@ -11,6 +11,7 @@ import axios from 'axios';
 import Logoutbutton from './Logoutbutton';
 import  { useAuth0} from "@auth0/auth0-react"
 import { useHistory } from "react-router-dom";
+import {Animated} from "react-animated-css";
 
 const useStyles = makeStyles({
     root: {
@@ -80,17 +81,24 @@ const Farm = () => {
           history.push('/map');
         }}>
         <CardContent>
-          <Typography className={classes.title} color="textPrimary" variant="h2" gutterBottom>
-            Add A Store
+        <Animated animationIn="rubberBand" animationOut="fadeOut" isVisible={true}>
+          <Typography className={classes.title} color="textPrimary" variant="h2" style={{textAlign:"center"}} gutterBottom>
+            View Map
           </Typography>
+          </Animated>
         
           
           </CardContent>
         <CardActions >
         <Logoutbutton/>
  
-          <Button endIcon={<ArrowRightIcon/>} type="submit" variant="contained" color="primary" style={{marginLeft:"auto"}}>Submit</Button>
-          
+          <Button endIcon={
+            
+        
+            <ArrowRightIcon/>
+           
+          } type="submit" variant="contained" color="primary" style={{marginLeft:"auto"}}>Submit</Button>
+       
         </CardActions>
         </form>
       </Card> 

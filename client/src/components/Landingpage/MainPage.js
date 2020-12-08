@@ -12,7 +12,7 @@ const MainPage = () => {
         <Navigation/>
         <section className="heroImage">
         <div className="swipe_text" data-aos="fade-up">
-        <h2 >Welcome to NavNirman</h2>
+        <h2 >Welcome to Nearby Service Recommender</h2>
         </div>
         <Button variant="contained" color="secondary" href="/auth" data-aos="flip-right" className="knowMoreButton">know more</Button>
        

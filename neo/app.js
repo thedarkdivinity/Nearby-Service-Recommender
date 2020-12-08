@@ -48,7 +48,7 @@ app.post("/user/add", async function (req, res) {
 
  const newUser= await  session
     .run(
-      "MERGE (n:user {name:$name,email:$email}) RETURN n",
+      "MERGE (u:user {name:$name,email:$email}) RETURN u",
       {name,email }
     );
     res.status(200).json(newUser);
@@ -72,6 +72,11 @@ app.post("/place/add", async function (req, res) {
       }
     );
     res.status(200).json(place);
+});
+//VIEW PLACES
+app.get("/place/view", async(req,res)=>{
+  const allPlaces= await session.run("MATCH (p:place) RETURN p");
+  res.status(200).json(allPlaces);
 });
 
 //frnds connect route
@@ -116,7 +121,7 @@ app.post("/placedist/connect",  async function (req, res) {
 });
 //connect user to place
 app.post("/userratesplace/connect", async function (req, res) {
-  const { email, pid, rating} = req.body;
+  const { pid,rating,email,pname} = req.body;
 
 
   const UserRatePlaces= await  session
