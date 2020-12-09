@@ -128,8 +128,12 @@ const Mep=()=> {
       rating
     };
     axios.post("http://localhost:9000/place/add",addedPlace);
+
     axios.post("http://localhost:5000/rate",ratingObject);
-    axios.post("http://localhost:9000/userratesplace/connect",graphRatingObject);
+    setTimeout(()=>{
+      axios.post("http://localhost:9000/userratesplace/connect",graphRatingObject);
+    },5000);
+    
   }
   const AddPlace=()=>{
     const pid= lati * longi;

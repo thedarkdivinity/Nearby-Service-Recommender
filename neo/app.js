@@ -68,8 +68,7 @@ app.post("/place/add", async function (req, res) {
       "MERGE  (n:place {pid:$pid,pname:$pname,latitude:$latitude,longitude:$longitude}) RETURN n",
       {
         pid,
-        pname,
-       
+        pname, 
         latitude,
         longitude
       }
