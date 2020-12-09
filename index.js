@@ -83,7 +83,18 @@ app.get('/user/:email',async(req,res)=>{
    
     }
 })
+app.post('/contactus',async (req,res)=>{
 
+    try {
+        //await
+        const {uname,email,messg}=req.body;
+        const newRating= await pool.query("INSERT INTO contactus(uname,email,messg) VALUES($1,$2,$3) RETURNING *",[uname,email,messg])
+        console.log(req.body);
+    } catch (error) {
+        console.error(error.message);
+    }
+    console.log(uname);
+})
 app.listen(5000,()=>{
     console.log('Server started on 5000');
 })
