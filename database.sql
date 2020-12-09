@@ -28,3 +28,10 @@ CREATE TABLE usertable(
       email VARCHAR(255),
      userphoto VARCHAR(255)
 );
+CREATE TABLE contactus(
+
+    uuid SERIAL PRIMARY KEY,
+      uname VARCHAR(255),
+      email VARCHAR(255),
+     messg VARCHAR(255)
+);
