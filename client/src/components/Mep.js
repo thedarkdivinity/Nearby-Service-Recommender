@@ -12,6 +12,7 @@ import { Button, IconButton, TextField} from "@material-ui/core";
 import MyPlace from "./MyPlace";
 import SelectedButtons from "./SelectedButtons";
 import MapModal from "./MapModal";
+import ViewPlace from "./ViewPlace";
 
 const Mep=()=> {
   const history = useHistory();
@@ -151,7 +152,7 @@ const Mep=()=> {
     alert("You need to log in");
 
     setAlertShown(false);
-    history.push('/');
+    history.push('/auth');
   }
   return (
     <>
@@ -278,7 +279,7 @@ const Mep=()=> {
         width:"300px"
       }}>
       
-      
+      <ViewPlace selectedPlace={selectedPlace}/>
       </div>
       </Drawer>
     </div>

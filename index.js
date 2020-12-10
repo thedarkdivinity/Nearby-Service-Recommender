@@ -87,8 +87,8 @@ app.post('/contactus',async (req,res)=>{
 
     try {
         //await
-        const {uname,email,messg}=req.body;
-        const newRating= await pool.query("INSERT INTO contactus(uname,email,messg) VALUES($1,$2,$3) RETURNING *",[uname,email,messg])
+        const {uname,email,message}=req.body;
+        const newRating= await pool.query("INSERT INTO contactus(uname,email,message) VALUES($1,$2,$3) RETURNING *",[uname,email,message])
         console.log(req.body);
     } catch (error) {
         console.error(error.message);
