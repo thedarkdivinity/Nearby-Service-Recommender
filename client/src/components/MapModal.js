@@ -12,7 +12,7 @@ import Axios from 'axios';
 import { useState } from 'react';
 const MapModal = ({opened,getRatings,ModalCloseClicked}) => {
   const { user}=useAuth0();
-  const [dis,setDis]=useState(false);
+ 
     return (
         <Modal isOpen={opened} >
         <h2>View Ratings</h2>
@@ -22,13 +22,13 @@ const MapModal = ({opened,getRatings,ModalCloseClicked}) => {
         return(
           <li key={rati.pid}>{rati.email} {rati.pname} {rati.rating}
           <Button variant="contained" color="secondary" href={`/profile/${rati.email}/`}>View Profile</Button>
-         <Button variant="contained" color="secondary" disabled={dis} onClick={()=>{
+         <Button variant="contained" color="secondary" onClick={()=>{
            const friend= {
              email1:user.email,
              email2:rati.email
            };
             Axios.post("http://localhost:9000/friends/add",friend);
-            setDis(true);
+            
          
          }}>ADD FRIEND</Button>
          

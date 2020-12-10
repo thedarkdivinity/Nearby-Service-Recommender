@@ -79,7 +79,13 @@ app.post("/place/add", async function (req, res) {
 app.get("/place/view", async(req,res)=>{
   session = driver.session();
   const allPlaces= await session.run("MATCH (p:place) RETURN p");
-  res.status(200).json(allPlaces);
+  let resultPlace=[];
+ allPlaces.records.forEach((record)=>{
+   resultPlace.push(record._fields[0].properties);
+   console.log(record._fields[0].properties);
+   
+ })
+  res.status(200).json(resultPlace);
 });
 
 //frnds connect route
@@ -141,25 +147,178 @@ app.post("/userratesplace/connect", async function (req, res) {
     
 });
 //RECOMMENDING PLACES TO USERS
-// app.post("/placerecommendation", async function (req, res) {
-//session = driver.session();
-//     const {r,ptype}=req.body;
+app.post("/placerecommendation", async function (req, res) {
+session = driver.session();
+    const {r,ptype}=req.body;
  
-//   //console.log(name);
-//  const placerecommendation= await session
-//     .run(
-//       "MATCH(me:user)-[:friends]->(f),(f)-[r:rates]-(p:place) WHERE r.rating > 3 AND NOT (me)-[:rates]->(p) AND p.ptype=$type AND distance(point({latitude:toFloat(me.ulat),longitude:toFloat(me.ulong)}),point({latitude:toFloat(p.plat),longitude:toFloat(p.plong)})) < $radius RETURN distinct p AS place,count(*) AS count  ORDER BY count DESC LIMIT 10",
-//       { radius: r, type: ptype }
-//     )
+  //console.log(name);
+ const placerecommendation= await session
+    .run(
+      "MATCH(me:user)-[:friends]->(f),(f)-[r:rates]-(p:place) WHERE r.rating > 3 AND NOT (me)-[:rates]->(p) AND p.ptype=$type AND distance(point({latitude:toFloat(me.ulat),longitude:toFloat(me.ulong)}),point({latitude:toFloat(p.plat),longitude:toFloat(p.plong)})) < $radius RETURN distinct p AS place,count(*) AS count  ORDER BY count DESC LIMIT 10",
+      { radius: r, type: ptype }
+    )
 
-//   res.status(200).json(placerecommendation);
-// });
+  res.status(200).json(placerecommendation);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //SIMPLIFIED RECOMMENDATION QUERY 
 app.post("/recommend",async (req,res)=>{
   session = driver.session();
 const {email}=req.body;
 const recommendation=await session.run(
-  "MATCH(me:user{email:$email})-[:friends]->(f:user),(f)-[r:rates]->(p:place)  RETURN DISTINCT p AS place",
+  "MATCH(me:user{email:$email})-[:friends]->(f:user) ,(f)-[r:rates]->(p:place)  RETURN  p,r,f",
   {email:email}
 );
 res.status(200).json(recommendation);
