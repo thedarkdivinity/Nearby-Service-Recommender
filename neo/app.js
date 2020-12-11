@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const driver = neo4j.driver(
   "bolt://localhost",
-  neo4j.auth.basic("neo4j", "sayush")
+  neo4j.auth.basic("neo4j", "neo5j")
 );
 var session;
 //home route
@@ -43,15 +43,14 @@ app.get("/places",async(req,res)=>{
 })
 
 //add user route
-
 app.post("/user/add", async function (req, res) {
   session = driver.session();
-  const {name,email} = req.body;
+  const {name,email,ulat,ulng} = req.body;
 
  const newUser= await  session
     .run(
-      "MERGE (u:user {name:$name,email:$email}) RETURN u",
-      {name,email }
+      "MERGE (u:user {name:$name,email:$email,$ulat,$ulng}) RETURN u",
+      {name,email ,ulat,ulng}
     );
     res.status(200).json(newUser);
     console.log(newUser);
@@ -60,17 +59,20 @@ app.post("/user/add", async function (req, res) {
 //add place 
 app.post("/place/add", async function (req, res) {
   session = driver.session();
-  const { pid, pname,latitude,longitude } = req.body;
+  const { pid, pname,plat,plng,prating,ptype} = req.body;
 
   //console.log(name);
  const place=  await session
     .run(
-      "MERGE  (n:place {pid:$pid,pname:$pname,latitude:$latitude,longitude:$longitude}) RETURN n",
+      "MERGE  (n:place {pid:$pid,pname:$pname,plat:$plat,plng:$plng,prating:$prating,ptype:$ptye}) RETURN n",
       {
         pid,
-        pname, 
-        latitude,
-        longitude
+        pname,
+        plat,
+        plng,
+        prating,
+        ptype
+
       }
     );
     res.status(200).json(place);
@@ -79,13 +81,7 @@ app.post("/place/add", async function (req, res) {
 app.get("/place/view", async(req,res)=>{
   session = driver.session();
   const allPlaces= await session.run("MATCH (p:place) RETURN p");
-  let resultPlace=[];
- allPlaces.records.forEach((record)=>{
-   resultPlace.push(record._fields[0].properties);
-   console.log(record._fields[0].properties);
-   
- })
-  res.status(200).json(resultPlace);
+  res.status(200).json(allPlaces);
 });
 
 //frnds connect route
@@ -118,7 +114,7 @@ app.post("/placedist/connect",  async function (req, res) {
 
    session
     .run(
-      "MATCH(a:place {pid:$pid1}),(b:place {pid:$pid2}) MERGE(a)-[r:distance {dist:distance(point({latitude:toFloat(a.plat),longitude:toFloat(a.plong)}),point({latitude:toFloat(b.plat),longitude:toFloat(b.plong)}))}]->(b) RETURN r",
+      "MATCH(a:place {pid:$pid1}),(b:place {pid:$pid2}) MERGE(a)-[r:distance {dist:distance(point({latitude:toFloat(a.plat),longitude:toFloat(a.plng)}),point({latitude:toFloat(b.plat),longitude:toFloat(b.plng)}))}]->(b) RETURN r",
       { pid1, pid2 }
     )
 
@@ -134,7 +130,7 @@ app.post("/placedist/connect",  async function (req, res) {
 //connect user to place
 app.post("/userratesplace/connect", async function (req, res) {
   session = driver.session();
-  const { pid,rating,email,pname} = req.body;
+  const { pid,rating,email} = req.body;
 
 
   const UserRatePlaces= await  session
@@ -146,183 +142,30 @@ app.post("/userratesplace/connect", async function (req, res) {
 
     
 });
-//RECOMMENDING PLACES TO USERS
+ //RECOMMENDING PLACES TO USERS
 app.post("/placerecommendation", async function (req, res) {
-session = driver.session();
-    const {r,ptype}=req.body;
+ session = driver.session();
+    const {radius,ptype,email}=req.body;
  
   //console.log(name);
  const placerecommendation= await session
-    .run(
-      "MATCH(me:user)-[:friends]->(f),(f)-[r:rates]-(p:place) WHERE r.rating > 3 AND NOT (me)-[:rates]->(p) AND p.ptype=$type AND distance(point({latitude:toFloat(me.ulat),longitude:toFloat(me.ulong)}),point({latitude:toFloat(p.plat),longitude:toFloat(p.plong)})) < $radius RETURN distinct p AS place,count(*) AS count  ORDER BY count DESC LIMIT 10",
-      { radius: r, type: ptype }
-    )
+    .run("MATCH(me:user {email:$email})-[:friends]->(f),(f)-[r:rates]->(p:place) with p,distance(point({latitude:toFloat(me.ulat),longitude:toFloat(me.ulng)}),point({latitude:toFloat(p.plat),longitude:toFloat(p.plng)})) as d where r.rating > 3 AND d < $radius AND NOT (me)-[:rates]->(p) AND p.ptype=$ptye return p ORDER BY d ASC LIMIT 10",
+   { radius,ptype,email }    
+  );
 
-  res.status(200).json(placerecommendation);
+res.status(200).json(placerecommendation);
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//SIMPLIFIED RECOMMENDATION QUERY 
-app.post("/recommend",async (req,res)=>{
-  session = driver.session();
-const {email}=req.body;
-const recommendation=await session.run(
-  "MATCH(me:user{email:$email})-[:friends]->(f:user) ,(f)-[r:rates]->(p:place)  RETURN  p,r,f",
-  {email:email}
-);
-res.status(200).json(recommendation);
-});
+// SIMPLIFIED RECOMMENDATION QUERY 
+// app.post("/recommend",async (req,res)=>{
+//   session = driver.session();
+// const {email}=req.body;
+// const recommendation=await session.run(
+//   "MATCH(me:user{email:$email})-[:friends]->(f:user),(f)-[r:rates]->(p:place)  RETURN DISTINCT p AS place",
+//   {email:email}
+// );
+// res.status(200).json(recommendation);
+// });
 app.listen(9000);
 
 console.log("Server started on port 9000");
