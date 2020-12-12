@@ -155,6 +155,19 @@ app.post("/placerecommendation", async function (req, res) {
 
 res.status(200).json(placerecommendation);
 });
+//shortest dist 
+app.post("/shortestdist", async function (req, res) {
+  session = driver.session();
+     const {email}=req.body;
+  
+   //console.log(name);
+  const shortestdist= await session
+     .run("MATCH(me:user {email:$email}),(p:place) with p,distance(point({latitude:toFloat(me.ulat),longitude:toFloat(me.ulng)}),point({latitude:toFloat(p.plat),longitude:toFloat(p.plng)})) as d return p ORDER BY d ASC LIMIT 10",
+    { email }    
+   );
+ 
+ res.status(200).json(placerecommendation);
+ });
 
 // SIMPLIFIED RECOMMENDATION QUERY 
 // app.post("/recommend",async (req,res)=>{
