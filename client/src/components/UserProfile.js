@@ -56,7 +56,7 @@ const UserProfile = () => {
 
     try {
       const myRatings= await Axios.get(`http://localhost:5000/rateme/${email}`);
-      console.log(myRatings.data);
+      
     } catch (error) {
       console.log(error.message);
     }

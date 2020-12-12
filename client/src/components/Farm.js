@@ -81,12 +81,14 @@ const Farm = () => {
           history.push('/map');
         }}>
         <CardContent>
-        <Animated animationIn="rubberBand" animationOut="fadeOut" isVisible={true}>
+        
           <Typography className={classes.title} color="textPrimary" variant="h2" style={{textAlign:"center"}} gutterBottom>
             View Map
           </Typography>
-          </Animated>
-        
+         
+          <figure style={{display:"grid",placeItems:"center"}}>
+          <img src={user.picture} className="animate__animated animate__backInUp" alt="Your Profile Picture" style={{borderRadius:"50%"}}/>
+          </figure>
           
           </CardContent>
         <CardActions >
@@ -95,9 +97,9 @@ const Farm = () => {
           <Button endIcon={
             
         
-            <ArrowRightIcon/>
+            <ArrowRightIcon className="animate__animated animate__rubberBand forever"/>
            
-          } type="submit" variant="contained" color="primary" style={{marginLeft:"auto"}}>Submit</Button>
+          } type="submit" className="animate__animated animate__bounceIn" variant="contained" color="primary" style={{marginLeft:"auto"}}>View Now</Button>
        
         </CardActions>
         </form>
