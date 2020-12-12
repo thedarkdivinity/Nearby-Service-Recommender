@@ -7,6 +7,9 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import SendIcon from '@material-ui/icons/Send';
 import { TextField } from '@material-ui/core';
+import { useState } from 'react';
+import Axios from 'axios';
+
 const useStyles = makeStyles({
     root: {
       minWidth: 275,
@@ -28,23 +31,40 @@ const useStyles = makeStyles({
     },
   });
 const ContactForm = () => {
+  const [name,setName]=useState();
+const [email,setEmail]=useState();
+const [msg,setMsg]=useState();
     const classes = useStyles();
+    const contactHandler=(e)=>{
+      e.preventDefault();
+      const contactUS={
+        name,
+        email,
+        msg
+      };
+      Axios.post("http://localhost/5000/contactus",contactUS);
+      alert("Submitted");
+
+    }
     return (
         <Card className={classes.root} style={{marginTop:"40px"}}>
+        <form onSubmit={contactHandler}>
       <CardContent>
         <Typography variant="h2" className="animate__animated animate__tada forever" style={{textAlign:"center"}} color="textSecondary" gutterBottom>
           Contact Us
         </Typography>
-       <TextField fullWidth label="Name" style={{marginTop:"20px"}} variant="standard" color="secondary" />
-       <TextField fullWidth label="Email" style={{marginTop:"20px"}} variant="standard" color="secondary"/>
-       <TextField fullWidth label="Message" style={{marginTop:"20px"}} variant="standard" color="secondary" />
+        
+       <TextField fullWidth onChange={()=>setName(name)} label="Name"   value={name} style={{marginTop:"20px"}} variant="standard" color="secondary" />
+       <TextField fullWidth  onChange={()=>setEmail(email)} label="Email" type="email" value={email} style={{marginTop:"20px"}} variant="standard" color="secondary"/>
+       <TextField fullWidth label="Message"   onChange={()=>setMsg(msg)} value={msg} style={{marginTop:"20px"}} variant="standard" color="secondary" />
       </CardContent>
       <CardActions>
         <Button size="large" style={{
             marginLeft:"auto",
            
-        }} variant="contained" color="secondary" endIcon={<SendIcon className="animate__animated animate__rubberBand forever"/>}>Submit</Button>
+        }} variant="contained" color="secondary" type="submit" endIcon={<SendIcon className="animate__animated animate__rubberBand forever"/>}>Submit</Button>
       </CardActions>
+      </form>
     </Card>
     )
 }
