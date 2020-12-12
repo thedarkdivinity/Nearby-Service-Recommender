@@ -94,7 +94,22 @@ app.post('/contactus',async (req,res)=>{
         console.error(error.message);
     }
     console.log(uname);
-})
+});
+app.post('/shortestDistance',async (req,res)=>{
+
+    try {
+        //await
+        const {pid1,pid2,lat1,lng1,lat2,lng2}=req.body;
+        const shortestDistance= await pool.query("SELECT ST_Distance(
+            'SRID=$pid1;POINT($lat1, $lng1)::geometry',
+            'SRID=$pid2;LINESTRING($lat2,$lng2)::geometry'
+        )",[pid1,pid2,lat1,lng1,lat2,lng2])
+        console.log(req.body);
+    } catch (error) {
+        console.error(error.message);
+    }
+    console.log(uname);
+});
 app.listen(5000,()=>{
     console.log('Server started on 5000');
 })

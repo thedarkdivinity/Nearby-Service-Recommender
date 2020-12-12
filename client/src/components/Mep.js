@@ -280,6 +280,7 @@ const Mep=()=> {
       }}>
       
       <ViewPlace selectedPlace={selectedPlace}/>
+      
       </div>
       </Drawer>
     </div>
