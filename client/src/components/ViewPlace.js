@@ -1,6 +1,7 @@
 import { Typography } from '@material-ui/core'
 import React from 'react'
 import SelectedPlaceTable from './SelectedPlaceTable'
+import Uploader from './Uploader'
 
 const ViewPlace = ({selectedPlace}) => {
     return (
@@ -10,6 +11,7 @@ const ViewPlace = ({selectedPlace}) => {
             >{selectedPlace.title}</Typography>
            {console.log(selectedPlace)}
             <SelectedPlaceTable selectedPlace={selectedPlace}/>
+            <Uploader/>
         </div>
     )
 }

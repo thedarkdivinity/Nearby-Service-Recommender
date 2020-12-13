@@ -42,7 +42,7 @@ const [msg,setMsg]=useState();
         email,
         msg
       };
-      Axios.post("http://localhost/5000/contactus",contactUS);
+      Axios.post("http://localhost:5000/contactus",contactUS);
       alert("Submitted");
 
     }
@@ -54,9 +54,9 @@ const [msg,setMsg]=useState();
           Contact Us
         </Typography>
         
-       <TextField fullWidth onChange={()=>setName(name)} label="Name"   value={name} style={{marginTop:"20px"}} variant="standard" color="secondary" />
-       <TextField fullWidth  onChange={()=>setEmail(email)} label="Email" type="email" value={email} style={{marginTop:"20px"}} variant="standard" color="secondary"/>
-       <TextField fullWidth label="Message"   onChange={()=>setMsg(msg)} value={msg} style={{marginTop:"20px"}} variant="standard" color="secondary" />
+       <TextField fullWidth onChange={(e)=>setName(e.target.value)} label="Name"   value={name} style={{marginTop:"20px"}} variant="standard" color="secondary" />
+       <TextField fullWidth  onChange={(e)=>setEmail(e.target.value)} label="Email" type="email" value={email} style={{marginTop:"20px"}} variant="standard" color="secondary"/>
+       <TextField fullWidth label="Message"   onChange={(e)=>setMsg(e.target.value)} value={msg} style={{marginTop:"20px"}} variant="standard" color="secondary" />
       </CardContent>
       <CardActions>
         <Button size="large" style={{

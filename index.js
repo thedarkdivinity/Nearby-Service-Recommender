@@ -3,7 +3,8 @@ const app=express();
 const pool=require('./db');
 const cors=require('cors');
 //MIDDLEWARE
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({ limit: '50mb',extended: true }))
 app.use(cors());
 
 //GET AN ENTRY
@@ -16,6 +17,14 @@ app.get('/acquire',async (req,res)=>{
     }
 })
 
+//UPLOAD IMAGE TO CLOUDINARY
+app.post('/api/upload',(req,res)=>{
+try {
+    const { data }=req.body;
+} catch (error) {
+    console.error(error);
+}
+})
 
 // CREATE AN ENTRY
 app.post('/acquire',async(req,res)=>{
@@ -84,26 +93,21 @@ app.get('/user/:email',async(req,res)=>{
     }
 })
 app.post('/contactus',async (req,res)=>{
-
-    try {
+    const {name,email,msg}=req.body;
+  
         //await
-        const {name,email,msg}=req.body;
-        const contactUsObject= await pool.query("INSERT INTO contactus(uname,email,message) VALUES($1,$2,$3) RETURNING *",[name,email,msg])
+        
+        const contactUsObject= await pool.query("INSERT INTO contactus(name,email,msg) VALUES($1,$2,$3) RETURNING *",[name,email,msg]);
        res.status(200).json(contactUsObject);
+
        
-        console.log(req.body);
-    } catch (error) {
-        console.error(error.message);
-    }
-    console.log(uname);
+       
 });
 // app.post('/shortestDistance',async (req,res)=>{
 
 //     try {
 //         //await
-//         const {pid1,pid2,lat1,lng1,lat2,lng2}=req.body;
-//         const shortestDistance= await pool.query("SELECT ST_Distance(
-//             'SRID=$pid1;POINT($lat1, $lng1)::geometry',
+//         const {pid1,pid2,lat1,ln  const {pid,rating,email,pname,uname,userPic}=req.body;at1, $lng1)::geometry',
 //             'SRID=$pid2;LINESTRING($lat2,$lng2)::geometry'
 //         )",[pid1,pid2,lat1,lng1,lat2,lng2])
 //         console.log(req.body);

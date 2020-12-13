@@ -31,7 +31,7 @@ CREATE TABLE usertable(
 CREATE TABLE contactus(
 
     uuid SERIAL PRIMARY KEY,
-      uname VARCHAR(255),
+      name VARCHAR(255),
       email VARCHAR(255),
-     messg VARCHAR(255)
+     msg VARCHAR(255)
 );

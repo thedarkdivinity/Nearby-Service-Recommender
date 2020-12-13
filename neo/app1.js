@@ -155,30 +155,30 @@ app.post("/placerecommendation", async function (req, res) {
 
 res.status(200).json(placerecommendation);
 });
-//shortest dist 
-app.post("/shortestdist", async function (req, res) {
-  session = driver.session();
-     const {email}=req.body;
+// //Services having the shortest distance from my location
+// app.post("/shortestdist", async function (req, res) {
+//   session = driver.session();
+//      const {email}=req.body;
   
-   //console.log(name);
-  const shortestdist= await session
-     .run("MATCH(me:user {email:$email}),(p:place) with p,distance(point({latitude:toFloat(me.ulat),longitude:toFloat(me.ulng)}),point({latitude:toFloat(p.plat),longitude:toFloat(p.plng)})) as d return p ORDER BY d ASC LIMIT 10",
-    { email }    
-   );
+//    //console.log(name);
+//   const shortestdist= await session
+//      .run("MATCH(me:user {email:$email}),(p:place) with p,distance(point({latitude:toFloat(me.ulat),longitude:toFloat(me.ulng)}),point({latitude:toFloat(p.plat),longitude:toFloat(p.plng)})) as d return p ORDER BY d ASC LIMIT 10",
+//     { email }    
+//    );
  
- res.status(200).json(placerecommendation);
- });
+//  res.status(200).json(shortestdist);
+//  });
 
 // SIMPLIFIED RECOMMENDATION QUERY 
-// app.post("/recommend",async (req,res)=>{
-//   session = driver.session();
-// const {email}=req.body;
-// const recommendation=await session.run(
-//   "MATCH(me:user{email:$email})-[:friends]->(f:user),(f)-[r:rates]->(p:place)  RETURN DISTINCT p AS place",
-//   {email:email}
-// );
-// res.status(200).json(recommendation);
-// });
+app.post("/recommend",async (req,res)=>{
+  session = driver.session();
+const {email}=req.body;
+const recommendation=await session.run(
+  "MATCH(me:user{email:$email})-[:friends]->(f:user),(f)-[r:rates]->(p:place)  RETURN DISTINCT p AS place",
+  {email:email}
+);
+res.status(200).json(recommendation);
+});
 app.listen(9000);
 
 console.log("Server started on port 9000");
