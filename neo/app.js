@@ -106,7 +106,7 @@ app.post("/friends/check",async(req,res)=>{
   session = driver.session();
   const { email1, email2 } = req.body;
 
-  const check= await session.run("MATCH(a:user {email:$email1})<-[r:friends]-(b:user {email:$email2}) RETURN a,b,r",
+  const check= await session.run("MATCH(a:user {email:$email1})-[r:friends]-(b:user {email:$email2}) RETURN a,b,r",
   {email1,email2}
   );
   res.status(200).json(check.records);
