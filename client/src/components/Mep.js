@@ -8,11 +8,18 @@ import {useAuth0} from '@auth0/auth0-react';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import CancelIcon from '@material-ui/icons/Cancel';
-import { Button, IconButton, TextField} from "@material-ui/core";
+import { Button, IconButton, TextField, Typography} from "@material-ui/core";
 import MyPlace from "./MyPlace";
 import SelectedButtons from "./SelectedButtons";
 import MapModal from "./MapModal";
 import ViewPlace from "./ViewPlace";
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import InboxIcon from '@material-ui/icons/Inbox';
+import DraftsIcon from '@material-ui/icons/Drafts';
 
 const Mep=()=> {
   const history = useHistory();
@@ -37,7 +44,9 @@ const Mep=()=> {
   const [parameterToSearch,setParameterToSearch]=useState("petrol stations");
   const [alertShown,setAlertShown]=useState(true);
   const [jagahName,setJagahName]=useState("");
+  const [showRecommend,setShowRecommend]=useState([]);
   const [getRatings,setGetRatings]=useState([]);
+  const [recModal,setRecModal]=useState(false);
  
   const ApiKey =
     "pk.eyJ1Ijoid2ltc2dkIiwiYSI6ImNrZzg4bGtvYTBiNmUycWxzYmlmdW95ZDQifQ.RT-TaJBBkcFVrVqwuusKpQ";
@@ -45,6 +54,10 @@ const Mep=()=> {
   useEffect(() => {
     getLocation();
   }, [lati,longi]);
+  useEffect(()=>{
+    getRecommendations();
+
+  },[]);
   useEffect(()=>{
     getLocs();
   },[parameterToSearch])
@@ -136,6 +149,16 @@ const Mep=()=> {
     },5000);
     
   }
+  const getRecommendations= async()=>{
+    try {
+      const recommendations= await axios.get(`http://localhost:9000/recommend/${user.email}`);
+      setShowRecommend(recommendations.data);
+
+
+    } catch (error) {
+      
+    }
+  }
   const AddPlace=()=>{
     const pid= lati * longi;
     const newPlace={
@@ -163,13 +186,29 @@ const Mep=()=> {
     <Button 
     variant="contained"
     color="secondary"
-    style={{display:"block"}}
+
     onClick={()=>setParameterToSearch(query)}
     >Search Now</Button>
-    
+    <Button 
+    variant="contained"
+    color="secondary"
+      onClick={()=>setRecModal(true)}
+    >View Friend Recommendation</Button>
+    <Modal isOpen={recModal} >
+    <Typography variant="h4" > Your Recommendations are ...</Typography>
+<List>
+{showRecommend.map((sr)=>{
+  return(
+    <li>{sr.pname}</li>
+  )
+})}
+</List>
+<Button variant="contained" color="secondary" onClick={()=>setRecModal(false)}>CLOSE</Button>
+    </Modal>
     <TextField type="number" variant="standard" placeholder="Enter radius" style={{display:"block"}} value={radius} onChange={(e)=>setRadius(e.target.value)} />
 
     <Button 
+    className="addMarginTopOnMobile"
     variant="contained"
     color="secondary"
       onClick={()=>setLocationModal(true)}

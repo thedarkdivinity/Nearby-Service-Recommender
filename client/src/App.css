@@ -77,3 +77,9 @@ main{
  margin-top: 20px !important;
 
 }
+@media (max-width :740px){
+
+  .addMarginTopOnMobile{
+    margin-top: 19px;
+  }
+}

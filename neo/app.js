@@ -150,7 +150,7 @@ app.post("/userratesplace/connect", async function (req, res) {
 app.post("/placerecommendation", async function (req, res) {
 session = driver.session();
     const {r,ptype}=req.body;
- 
+     
   //console.log(name);
  const placerecommendation= await session
     .run(
@@ -314,14 +314,19 @@ session = driver.session();
 
 
 //SIMPLIFIED RECOMMENDATION QUERY 
-app.post("/recommend",async (req,res)=>{
+app.get("/recommend/:email",async (req,res)=>{
   session = driver.session();
-const {email}=req.body;
-const recommendation=await session.run(
-  "MATCH(me:user{email:$email})-[:friends]->(f:user) ,(f)-[r:rates]->(p:place)  RETURN  p,r,f",
-  {email:email}
+  let recommend=[];
+const email=req.params.email;
+const rec=await session.run(
+  "MATCH(me:user{email:$email})-[:friends]->(f:user) ,(f)-[r:rates]->(p:place)   RETURN  p,r,f",
+  {email}
 );
-res.status(200).json(recommendation);
+rec.records.forEach((record)=>{
+recommend.push(record._fields[0].properties);
+});
+
+res.status(200).json(recommend);
 });
 app.listen(9000);
 
